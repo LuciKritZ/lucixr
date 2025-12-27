@@ -14,7 +14,8 @@ export class DiscoveryEngine {
   }
 
   async run(prospect: ProspectProduct): Promise<CompetitorProduct | null> {
-    const xrayModule = initXRay({ apiUrl: '/api/xray' });
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const xrayModule = initXRay({ apiUrl: `${baseUrl}/api/xray` });
     const trace = xrayModule.createTrace(
       `Competitor Discovery: ${prospect.title}`,
       {
@@ -25,7 +26,6 @@ export class DiscoveryEngine {
     );
 
     try {
-      // Step 1: Keyword Generation (Simulated LLM)
       const keywords = await trace.recordStep(
         'Keyword Generation',
         'generative',
@@ -40,7 +40,6 @@ export class DiscoveryEngine {
         }
       );
 
-      // Step 2: Search & Retrieval (Simulated API)
       const candidates = await trace.recordStep(
         'Candidate Search',
         'retrieval',
@@ -54,7 +53,6 @@ export class DiscoveryEngine {
         }
       );
 
-      // Step 3: Hard Filters (Price, Rating, Reviews)
       const filtered = await trace.recordFilterStep(
         'Business Logic Filters',
         candidates,
@@ -100,7 +98,6 @@ export class DiscoveryEngine {
         }
       );
 
-      // Step 4: Relevance Sanity Check (LLM Simulation)
       const verified = await trace.recordStep(
         'LLM Relevance Check',
         'generative',
@@ -120,7 +117,6 @@ export class DiscoveryEngine {
         }
       );
 
-      // Step 5: Ranking & Selection
       const winner = await trace.recordStep(
         'Final Ranking',
         'rank',
